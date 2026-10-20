@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title desc">
+  <title id="title">Brain Rot Pack buddy</title>
+  <desc id="desc">A playful glitchy brain creature with mismatched eyes, a toothy grin, and orbiting pixel sparks.</desc>
+  <defs>
+    <linearGradient id="brain" x1="42" y1="32" x2="212" y2="218" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ff93d1"/>
+      <stop offset=".48" stop-color="#ae7cff"/>
+      <stop offset="1" stop-color="#69f2cf"/>
+    </linearGradient>
+    <linearGradient id="glass" x1="68" y1="74" x2="186" y2="142" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#fff" stop-opacity=".45"/>
+      <stop offset="1" stop-color="#d5b7ff" stop-opacity=".08"/>
+    </linearGradient>
+    <filter id="shadow" x="20" y="15" width="220" height="232" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="5"/>
+      <feOffset dy="7"/>
+      <feComponentTransfer><feFuncA type="linear" slope=".32"/></feComponentTransfer>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <g fill="none" stroke="#eee0ff" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M24 115c19-11 34-20 49-23m110 0c17 2 33 10 49 22" stroke-width="2" stroke-opacity=".54"/>
+    <path d="m35 108-8-8m190 7 8-9" stroke-width="3" stroke-opacity=".76"/>
+  </g>
+  <g fill="#bcffeb">
+    <path d="m38 53 4 12 12 4-12 4-4 12-4-12-12-4 12-4z"/>
+    <path d="m216 50 3 9 9 3-9 3-3 9-3-9-9-3 9-3z" fill="#ffc5e7"/>
+    <path d="m222 185 2 6 6 2-6 2-2 6-2-6-6-2 6-2z" fill="#c8b2ff"/>
+    <rect x="42" y="183" width="7" height="7" rx="2" transform="rotate(18 42 183)" fill="#ffe591"/>
+  </g>
+  <g filter="url(#shadow)">
+    <path d="M128 42c-13-17-43-12-48 10-21-7-40 12-33 33-22 9-24 38-7 50-13 20-3 45 18 49-3 24 19 40 40 31 11 19 39 22 53 6 22 13 48-2 46-27 20-12 21-39 5-53 14-19 5-44-16-50 5-23-16-42-38-35-1-8-9-14-20-14Z" fill="url(#brain)" stroke="#f5e6ff" stroke-width="5" stroke-linejoin="round"/>
+    <path d="M126 50c-10 12-12 25-4 36m-37-28c-9 11-7 24 4 30m-42 14c12 1 21 9 22 20m-7 53c11-7 23-6 31 3m62-102c-12 7-16 18-12 30m46 8c-13 2-22 11-23 23m8 49c-10-9-22-10-32-2m-29-53v24" fill="none" stroke="#633c93" stroke-opacity=".58" stroke-width="5" stroke-linecap="round"/>
+    <path d="M69 92c21-16 91-23 119 1 8 7 11 19 5 29-9 15-27 20-42 14l-15-7-14 8c-19 10-47 7-58-9-8-11-6-27 5-36Z" fill="url(#glass)" stroke="#fff" stroke-opacity=".76" stroke-width="4"/>
+    <ellipse cx="103" cy="112" rx="12" ry="17" fill="#fff7ff" stroke="#543665" stroke-width="4"/>
+    <ellipse cx="155" cy="112" rx="10" ry="14" fill="#fff7ff" stroke="#543665" stroke-width="4"/>
+    <ellipse cx="106" cy="115" rx="4" ry="7" fill="#342748"/>
+    <ellipse cx="153" cy="115" rx="4" ry="7" fill="#342748"/>
+    <path d="M104 151c12-14 37-14 50 0 3 3 3 9 0 12-12 13-37 13-50 0-3-3-3-9 0-12Z" fill="#573454" stroke="#ffe5f3" stroke-width="4"/>
+    <path d="M116 148v11m13-14v15m13-12v10" stroke="#fff6d8" stroke-width="5"/>
+    <path d="m78 143 8 4m91-4-8 4" stroke="#ff9dbf" stroke-width="7" stroke-linecap="round"/>
+    <path d="m190 79 8-7m-139 2-7-8" stroke="#e8ff8b" stroke-width="4" stroke-linecap="round"/>
+  </g>
+  <path d="M63 218h37m55 0h27" stroke="#ddccff" stroke-opacity=".5" stroke-width="2" stroke-linecap="round"/>
+  <path d="M113 219h30" stroke="#baffdf" stroke-width="3" stroke-linecap="round"/>
+</svg>
