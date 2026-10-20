@@ -192,9 +192,9 @@ document.addEventListener('DOMContentLoaded',()=>{
   const geoContext=geoCanvas.getContext('2d'),downContext=downCanvas.getContext('2d');
   const geo={running:false,over:false,last:0,distance:0,speed:5,level:1,timeSurvived:0,rewardedSeconds:0,jumpBuffer:0,coyote:0,jumpHeld:false,player:{x:145,y:314,size:36,vy:0,grounded:true},obstacles:[],sparks:[],sparksFound:0};
   const geoCourses=[
-    {name:'Soft Launch',speed:4.4,gravity:.64,jump:-12.9,finish:2100,sky:'#292341',glow:'#b792ff',accent:'#ff9bd4',gaps:[480,820,1210,1630],sparks:[330,690,1080,1500,1900]},
-    {name:'Prism Circuit',speed:5.2,gravity:.72,jump:-13.5,finish:2700,sky:'#1d2940',glow:'#7ee3d2',accent:'#ffac7b',gaps:[410,700,1010,1320,1640,1990,2330],sparks:[300,610,930,1240,1570,1900,2240,2550]},
-    {name:'Pulse Breaker',speed:6,gravity:.8,jump:-14,finish:3300,sky:'#321e42',glow:'#ff80bf',accent:'#83e7ff',gaps:[380,620,880,1130,1400,1680,1950,2230,2500,2800,3080],sparks:[280,550,810,1080,1350,1620,1900,2180,2460,2740,3020]},
+    {name:'Soft Launch',speed:3.4,gravity:.52,jump:-14.2,finish:1900,sky:'#292341',glow:'#b792ff',accent:'#ff9bd4',gaps:[650,1160,1690],sparks:[430,900,1410,1780]},
+    {name:'Prism Circuit',speed:4.1,gravity:.58,jump:-14.2,finish:2450,sky:'#1d2940',glow:'#7ee3d2',accent:'#ffac7b',gaps:[560,930,1320,1710,2110],sparks:[390,780,1170,1570,1980,2310]},
+    {name:'Pulse Breaker',speed:4.8,gravity:.64,jump:-14.3,finish:3050,sky:'#321e42',glow:'#ff80bf',accent:'#83e7ff',gaps:[500,820,1160,1490,1840,2200,2570,2910],sparks:[360,700,1030,1370,1710,2070,2440,2780]},
     ...[
       ['Violet Current','#302344','#c59bff','#ff88bf'],
       ['Neon Undertow','#182b39','#70e1d0','#ffa878'],
@@ -204,9 +204,9 @@ document.addEventListener('DOMContentLoaded',()=>{
       ['Afterglow Engine','#182f3c','#79e8de','#b69cff'],
       ['Last Light','#321e3c','#ff86c8','#96e4ff']
     ].map(([name,sky,glow,accent],index)=>{
-      const courseNumber=index+4,spacing=340-(courseNumber-4)*8,count=7+(courseNumber-4)*2;
+      const courseNumber=index+4,spacing=370-(courseNumber-4)*6,count=6+(courseNumber-4)*2;
       const gaps=Array.from({length:count},(_,i)=>440+(i+1)*spacing+(i%3)*9);
-      return{name,speed:6+(courseNumber-3)*.34,gravity:.78+(courseNumber-3)*.025,jump:-14,finish:3400+(courseNumber-3)*420,sky,glow,accent,gaps,sparks:gaps.filter((_,i)=>i%2===0).map(x=>x-82)};
+      return{name,speed:5.15+(courseNumber-4)*.25,gravity:.68+(courseNumber-4)*.018,jump:-14.3,finish:3000+(courseNumber-4)*390,sky,glow,accent,gaps,sparks:gaps.filter((_,i)=>i%2===0).map(x=>x-96)};
     })
   ];
   const geoLevelSelect=document.getElementById('geoLevel'),geoHud=document.getElementById('geoScore').parentElement;
@@ -365,11 +365,130 @@ document.addEventListener('DOMContentLoaded',()=>{
     lock:'<rect x="12" y="27" width="40" height="31" rx="6"/><path d="M21 27v-9a11 11 0 0 1 22 0v9m-11 12v8" fill="none" stroke="#f1e5ff" stroke-width="4" stroke-linecap="round"/>',
     speaker:'<path d="M8 26h12l16-13v38L20 38H8Zm36-3q10 9 0 18m5-26q17 17 0 34" fill="none" stroke="#f1e5ff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>',
     math:'<path d="M32 9v46M9 32h46" stroke="#f1e5ff" stroke-width="5" stroke-linecap="round"/><circle cx="17" cy="17" r="3"/><circle cx="47" cy="47" r="3"/>',
+    buddy:'<path d="m13 28 4-15 15 10 15-10 4 15q9 8 7 21-3 13-26 13T6 49q-2-13 7-21Z"/><circle cx="23" cy="38" r="3" fill="#29213d"/><circle cx="41" cy="38" r="3" fill="#29213d"/><path d="M27 48q5 5 10 0" fill="none" stroke="#fff0fa" stroke-width="3" stroke-linecap="round"/>',
+    cat:'<path d="m13 26 4-14 15 10 15-10 4 14q10 8 7 23-4 14-26 14T6 49q-3-15 7-23Z"/><circle cx="23" cy="39" r="3" fill="#29213d"/><circle cx="41" cy="39" r="3" fill="#29213d"/><path d="M27 49q5 5 10 0m-26-3-8-2m9 7-8 2m49-7 8-2m-9 7 8 2" fill="none" stroke="#fff0fa" stroke-width="2.5" stroke-linecap="round"/>',
+    dog:'<path d="M15 27 7 16q-3 16 8 22-4 19 17 20 21-1 17-20 11-6 8-22l-8 11q-13-8-27 0Z"/><circle cx="24" cy="39" r="3" fill="#29213d"/><circle cx="41" cy="39" r="3" fill="#29213d"/><path d="M28 49q4 5 9 0" fill="none" stroke="#513b68" stroke-width="3" stroke-linecap="round"/>',
+    sheep:'<circle cx="18" cy="36" r="10"/><circle cx="29" cy="25" r="11"/><circle cx="42" cy="27" r="11"/><circle cx="49" cy="39" r="10"/><path d="M23 35q9-10 19 0v18H23Z"/><circle cx="29" cy="42" r="2.5" fill="#29213d"/><circle cx="40" cy="42" r="2.5" fill="#29213d"/><path d="M31 48q4 3 7 0" fill="none" stroke="#593f6c" stroke-width="2.5"/>',
+    snake:'<path d="M46 13q-15-10-24 2-8 11 5 17l13 4q14 4 8 15-6 10-21 2" fill="none" stroke="#c5a0fa" stroke-width="11" stroke-linecap="round"/><path d="M46 13q-15-10-24 2-8 11 5 17l13 4q14 4 8 15-6 10-21 2" fill="none" stroke="#f3eaff" stroke-width="2" stroke-linecap="round"/><circle cx="46" cy="13" r="2" fill="#29213d"/>',
+    frog:'<path d="M12 30q0-12 10-12 6 0 10 6 4-6 10-6 10 0 10 12 9 6 6 18-3 14-26 14T6 48q-3-12 6-18Z"/><circle cx="22" cy="25" r="5" fill="#f9f2ff"/><circle cx="42" cy="25" r="5" fill="#f9f2ff"/><circle cx="23" cy="26" r="2" fill="#29213d"/><circle cx="41" cy="26" r="2" fill="#29213d"/><path d="M22 45q10 9 20 0" fill="none" stroke="#315b55" stroke-width="3"/>',
+    turtle:'<ellipse cx="30" cy="38" rx="22" ry="15"/><path d="M15 35q15-14 30 0v9H15Z" fill="none" stroke="#f4eaff" stroke-width="3"/><circle cx="53" cy="35" r="7"/><circle cx="55" cy="34" r="1.5" fill="#29213d"/><path d="m16 50-3 7m16-5-1 7m15-9 3 7M8 37l-5-4" fill="none" stroke="#f4eaff" stroke-width="3" stroke-linecap="round"/>',
+    octopus:'<path d="M12 36a20 20 0 1 1 40 0v7q8 10 0 14-8 2-8-8-7 13-13 5-5 11-11 1-10 8-12-2-8 0-4-9Z"/><circle cx="25" cy="34" r="3" fill="#29213d"/><circle cx="39" cy="34" r="3" fill="#29213d"/><path d="M28 42q4 4 8 0" fill="none" stroke="#fff" stroke-width="2.5"/>',
+    ant:'<circle cx="21" cy="23" r="6"/><circle cx="32" cy="34" r="8"/><ellipse cx="46" cy="46" rx="9" ry="8"/><path d="m24 29-9 10m21 2 10-16m-12 20-1 12m8-9 8 8m-19-18-10-7m13 3-4-13m-7 0-4-7m12 6 4-7" fill="none" stroke="#f5eaff" stroke-width="3" stroke-linecap="round"/>',
+    bee:'<ellipse cx="32" cy="37" rx="17" ry="12"/><path d="M25 27v20m13-21v22" stroke="#fff0ad" stroke-width="5"/><path d="M22 28Q10 11 5 24q4 12 16 13m22-9q12-17 17-4-4 12-16 13" fill="#d7c1ff" fill-opacity=".7" stroke="#fff" stroke-width="2"/>',
+    ladybug:'<circle cx="32" cy="37" r="20"/><path d="M32 18v38M16 30q16 11 32 0" fill="none" stroke="#ffeaff" stroke-width="2.5"/><circle cx="23" cy="29" r="3" fill="#29213d"/><circle cx="41" cy="29" r="3" fill="#29213d"/><circle cx="21" cy="43" r="3" fill="#29213d"/><circle cx="43" cy="43" r="3" fill="#29213d"/><circle cx="32" cy="16" r="8"/>',
+    mouse:'<circle cx="22" cy="24" r="10"/><circle cx="42" cy="24" r="10"/><ellipse cx="32" cy="39" rx="20" ry="18"/><circle cx="25" cy="37" r="2.5" fill="#29213d"/><circle cx="39" cy="37" r="2.5" fill="#29213d"/><path d="M29 46q3 3 6 0m-6 2-12 3m13-1-12 7m16-9 12 3m-12-1 12 7" fill="none" stroke="#fff0fa" stroke-width="2" stroke-linecap="round"/>',
+    medal:'<circle cx="32" cy="27" r="15"/><path d="m22 40-4 17 14-7 14 7-4-17" fill="#ffb3d0" stroke="#fff0fa" stroke-width="2"/><path d="m32 17 3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z" fill="#fff0b0"/>',
+    tree:'<path d="M32 7 15 28h10L12 43h14v14h12V43h14L39 28h10Z"/><path d="M25 57h14" stroke="#f3e8ff" stroke-width="3"/>',
+    trident:'<path d="M32 58V13m0 0L20 26m12-13 12 13M20 26V10M44 26V10" fill="none" stroke="#d7c1ff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="20" cy="9" r="4"/><circle cx="32" cy="10" r="4"/><circle cx="44" cy="9" r="4"/>',
+    eye:'<path d="M5 32Q18 12 32 12t27 20Q46 52 32 52T5 32Z"/><circle cx="32" cy="32" r="10" fill="#f4ebff"/><circle cx="32" cy="32" r="4" fill="#28213d"/>',
+    chart:'<path d="M10 53V34h10v19Zm17 0V23h10v30Zm17 0V11h10v42Z"/><path d="m9 25 15-9 12 4 17-12" fill="none" stroke="#b9ffe4" stroke-width="3" stroke-linecap="round"/>',
+    message:'<path d="M8 12h48v34H32L18 57v-11H8Z"/><circle cx="21" cy="29" r="3" fill="#fff"/><circle cx="32" cy="29" r="3" fill="#fff"/><circle cx="43" cy="29" r="3" fill="#fff"/>',
+    trade:'<path d="M9 21h38l-8-8m16 30H17l8 8" fill="none" stroke="#e6dcff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="m47 17 8 4-8 5M17 39l-8 4 8 5" fill="none" stroke="#9cebd3" stroke-width="3"/>',
+    mic:'<rect x="24" y="8" width="16" height="31" rx="8"/><path d="M16 30v3a16 16 0 0 0 32 0v-3M32 49v8m-10 0h20" fill="none" stroke="#f4eaff" stroke-width="4" stroke-linecap="round"/>',
+    arrowUp:'<path d="m32 7 21 23H40v27H24V30H11Z"/>',
+    gem:'<path d="M16 10h32l11 16-27 31L5 26Z"/><path d="M16 10 22 26h20l6-16M5 26h54M22 26l10 31 10-31" fill="none" stroke="#f4ebff" stroke-width="2.5"/>',
+    face:'<circle cx="32" cy="32" r="24"/><path d="m13 25 17 2m21-2-17 2" stroke="#302943" stroke-width="5" stroke-linecap="round"/><path d="M22 43q10 7 20 0" fill="none" stroke="#302943" stroke-width="3"/>',
+    statue:'<path d="M15 56V27l6-7 11 4 11-4 6 7v29Zm4-34V11l10 5 10-5v11"/><path d="M25 34h.1m14 0h.1M27 45q5 3 10 0" fill="none" stroke="#f1e9ff" stroke-width="4" stroke-linecap="round"/>',
+    crown:'<path d="m8 19 13 12 11-20 11 20 13-12-5 34H13Z"/><path d="M15 59h34" stroke="#fff1bf" stroke-width="4"/><circle cx="8" cy="17" r="4"/><circle cx="32" cy="10" r="4"/><circle cx="56" cy="17" r="4"/>',
+    clipboard:'<rect x="13" y="12" width="38" height="48" rx="5"/><path d="M24 12V8h16v8H24Zm-2 17h18m-18 9h18m-18 9h12" fill="none" stroke="#f5eaff" stroke-width="3" stroke-linecap="round"/>',
+    flame:'<path d="M35 7q4 16-7 22 1-10-8-15-2 15-10 22-12 18 3 29 16 12 33 1 17-12 5-31-3 12-11 13 6-14-5-41Z"/><path d="M32 38q2 10-5 15-6 9 2 14 9 4 14-4 4-7-2-14-1 6-5 8 3-8-4-19Z" fill="#ffd989"/>',
+    rocket:'<path d="M32 7q17 8 17 29L32 53 15 36Q15 15 32 7Z"/><circle cx="32" cy="28" r="6" fill="#e4fbff"/><path d="m18 36-9 4v14l16-8m21-10 9 4v14l-16-8M26 49l-2 10 8-6 8 6-2-10" fill="#ff9ec9"/>',
+    egg:'<ellipse cx="32" cy="35" rx="19" ry="25"/><circle cx="25" cy="34" r="2.5" fill="#29213d"/><circle cx="39" cy="34" r="2.5" fill="#29213d"/><path d="M28 43q4 4 8 0" fill="none" stroke="#59456b" stroke-width="2.5"/>',
+    pancake:'<ellipse cx="32" cy="49" rx="22" ry="8"/><ellipse cx="32" cy="40" rx="22" ry="8"/><ellipse cx="32" cy="31" rx="22" ry="8"/><path d="M25 20h14l-3-7h-8z"/>',
+    berry:'<path d="M32 19q-20-9-22 12-1 21 22 30 23-9 22-30-2-21-22-12Z"/><path d="M32 20q-8-13-18-10 5 11 18 12m0-2q8-13 18-10-5 11-18 12" fill="#a7edcc"/><circle cx="23" cy="33" r="2" fill="#fff"/><circle cx="39" cy="41" r="2" fill="#fff"/><circle cx="28" cy="50" r="2" fill="#fff"/>',
+    crab:'<path d="M15 35q0-14 17-14t17 14v12q-17 12-34 0Z"/><path d="M16 31Q4 25 8 17m40 14q12-6 8-14M17 46 8 54m17-3-3 8m15-8 3 8m5-13 9 8" fill="none" stroke="#fff0f4" stroke-width="3"/><circle cx="25" cy="32" r="2.5"/><circle cx="39" cy="32" r="2.5"/>',
+    squid:'<path d="M32 9q19 0 19 22 0 12-19 15-19-3-19-15Q13 9 32 9Z"/><path d="M20 44q-9 7-2 14m12-12q-5 11 1 14m7-14q5 11-1 14m10-16q9 7 2 14" fill="none" stroke="#f4eaff" stroke-width="3" stroke-linecap="round"/><circle cx="26" cy="31" r="2.5"/><circle cx="38" cy="31" r="2.5"/>',
+    bone:'<path d="M18 24q-8 0-8-7t8-7q6 0 7 6h14q1-6 7-6 8 0 8 7t-8 7v16q8 0 8 7t-8 7q-6 0-7-6H25q-1 6-7 6-8 0-8-7t8-7Z"/>',
+    play:'<path d="M17 10v44l36-22z"/>',
+    check:'<path d="m10 34 14 14 30-32" fill="none" stroke="#9ef0c9" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>',
+    cross:'<path d="m15 15 34 34m0-34L15 49" fill="none" stroke="#ff9eb3" stroke-width="7" stroke-linecap="round"/>',
+    bolt:'<path d="M36 5 13 35h15l-3 24 26-34H36Z"/>',
+    spiral:'<path d="M32 32q9-12 18-3 10 12-2 24-18 12-34-2-15-18-1-38Q32-4 51 12" fill="none" stroke="#f6e8ff" stroke-width="5" stroke-linecap="round"/><circle cx="32" cy="32" r="4"/>',
+    rainbow:'<path d="M8 52a24 24 0 0 1 48 0M17 52a15 15 0 0 1 30 0m-21 0a6 6 0 0 1 12 0" fill="none" stroke="#ff9fc9" stroke-width="5" stroke-linecap="round"/><path d="M7 57h8m34 0h8" stroke="#d8c3ff" stroke-width="4" stroke-linecap="round"/>',
+    volcano:'<path d="M7 55 24 22h16l17 33Z"/><path d="M24 22q8-8 16 0M31 20l-3-9m8 9 3-12" fill="none" stroke="#ffd4a0" stroke-width="4" stroke-linecap="round"/><path d="m26 39 6 5 6-5" fill="none" stroke="#ff8f9f" stroke-width="4"/>',
+    taco:'<path d="M10 45Q12 17 32 17t22 28q-22 13-44 0Z"/><path d="M14 39q7-10 13 0 6-11 12 0 6-10 12 0" fill="none" stroke="#a7edbd" stroke-width="4" stroke-linecap="round"/><circle cx="23" cy="34" r="2"/><circle cx="41" cy="32" r="2"/>',
+    melon:'<path d="M8 44a24 24 0 0 1 48 0Z"/><path d="M12 44a20 20 0 0 1 40 0" fill="none" stroke="#b4f0bd" stroke-width="5"/><circle cx="23" cy="36" r="2"/><circle cx="32" cy="30" r="2"/><circle cx="41" cy="36" r="2"/>',
+    bread:'<path d="M10 31q0-15 13-15 9 0 9 7 0-7 9-7 13 0 13 15v25H10Z"/><path d="M23 27v7m9-9v8m9-6v7" stroke="#fff0ca" stroke-width="3" stroke-linecap="round"/>',
+    sushi:'<rect x="12" y="23" width="40" height="28" rx="12"/><path d="M18 28h28v18H18Z"/><ellipse cx="32" cy="35" rx="7" ry="5" fill="#ff9ab7"/><path d="M17 24q15-13 30 0" fill="none" stroke="#efffdc" stroke-width="4"/>',
+    candy:'<path d="m18 22-11-9v18l11 5m28-14 11-9v18l-11 5"/><rect x="17" y="20" width="30" height="27" rx="9"/><path d="M27 22v23m10-23v23" stroke="#fff0fa" stroke-width="4"/>',
+    cake:'<path d="M10 34h44v23H10zM7 28q6-10 12 0 6-10 12 0 6-10 12 0 6-10 12 0"/><path d="M18 40v7m14-7v7m14-7v7" stroke="#fff0c8" stroke-width="3" stroke-linecap="round"/>',
     sparkle:'<path d="m32 5 7 20 20 7-20 7-7 20-7-20-20-7 20-7z"/><path d="m51 5 2 6 6 2-6 2-2 6-2-6-6-2 6-2z" fill="#b8ffe2"/>',
     question:'<path d="M22 23q2-12 12-12 11 0 11 10 0 7-11 13l-1 7" fill="none" stroke="#f5eaff" stroke-width="5" stroke-linecap="round"/><circle cx="33" cy="52" r="3" fill="#b8ffe2"/>'
   };
   function iconKind(value){
-    if(/[❔❓]/u.test(value))return'question';if(/[🏠]/u.test(value))return'home';if(/[🎁📦]/u.test(value))return'gift';if(/[📘📖]/u.test(value))return'book';if(/[🎮🕹️]/u.test(value))return'game';if(/[🏆🏅]/u.test(value))return'trophy';if(/[⚙️]/u.test(value))return'gear';if(/[☁️]/u.test(value))return'cloud';if(/[🧠]/u.test(value))return'brain';if(/[🎟️]/u.test(value))return'ticket';if(/[🌱🌼🌸🌺🌻🌷🍃🌿]/u.test(value))return'flower';if(/[🐟🐠🐬🐋🦈🪼]/u.test(value))return'fish';if(/[🐦🐣🪽🦉🦅🐧]/u.test(value))return'bird';if(/[🦖🐉🦕]/u.test(value))return'dino';if(/[🍎🍑🍋🍓🍇🍊🫘]/u.test(value))return'fruit';if(/[🍕🍜🍰🍪🍩🍔🧁🍦]/u.test(value))return'food';if(/[👻]/u.test(value))return'ghost';if(/[🌙🌌]/u.test(value))return'moon';if(/[☀️🌞🌅]/u.test(value))return'sun';if(/[👤👥]/u.test(value))return'person';if(/[💧🌊]/u.test(value))return'water';if(/[🔐🔒]/u.test(value))return'lock';if(/[🔊🔈🔇]/u.test(value))return'speaker';if(/[➗➕➖✖️]/u.test(value))return'math';if(/[✨⭐🌟💫🎉🎊🔥💎]/u.test(value))return'sparkle';return'sparkle';
+    if(/[❔❓]/u.test(value))return'question';
+    if(/[🏠]/u.test(value))return'home';
+    if(/[🎁📦]/u.test(value))return'gift';
+    if(/[📘📖]/u.test(value))return'book';
+    if(/[🎮🕹️]/u.test(value))return'game';
+    if(/[▶]/u.test(value))return'play';
+    if(/[✅]/u.test(value))return'check';
+    if(/[❌]/u.test(value))return'cross';
+    if(/[⚡]/u.test(value))return'bolt';
+    if(/[🏆]/u.test(value))return'trophy';
+    if(/[🎖️🏅]/u.test(value))return'medal';
+    if(/[⚙️]/u.test(value))return'gear';
+    if(/[☁️]/u.test(value))return'cloud';
+    if(/[🧠🟣]/u.test(value))return'brain';
+    if(/[🎟️🎟]/u.test(value))return'ticket';
+    if(/[🎉🎊]/u.test(value))return'medal';
+    if(/[🌱🌼🌸🌺🌻🌷🌿]/u.test(value))return'flower';
+    if(/[🍃]/u.test(value))return'tree';
+    if(/[🌈]/u.test(value))return'rainbow';
+    if(/[🌋]/u.test(value))return'volcano';
+    if(/[🌠🌀]/u.test(value))return'spiral';
+    if(/[⭐🌟✨💫]/u.test(value))return'sparkle';
+    if(/[☀️🌞🌅]/u.test(value))return'sun';
+    if(/[🌙🌌]/u.test(value))return'moon';
+    if(/[🐟🐠🐬🐋🦈🪼]/u.test(value))return'fish';
+    if(/[🐦🐣🪽🦉🦅🐧]/u.test(value))return'bird';
+    if(/[🦖🐉🦕]/u.test(value))return'dino';
+    if(/[🐈]/u.test(value))return'cat';
+    if(/[🐕🐶]/u.test(value))return'dog';
+    if(/[🐑]/u.test(value))return'sheep';
+    if(/[🐍]/u.test(value))return'snake';
+    if(/[🐸]/u.test(value))return'frog';
+    if(/[🐢]/u.test(value))return'turtle';
+    if(/[🐙]/u.test(value))return'octopus';
+    if(/[🐜]/u.test(value))return'ant';
+    if(/[🐝]/u.test(value))return'bee';
+    if(/[🐞]/u.test(value))return'ladybug';
+    if(/[🐭]/u.test(value))return'mouse';
+    if(/[🦀]/u.test(value))return'crab';
+    if(/[🦑]/u.test(value))return'squid';
+    if(/[🦴]/u.test(value))return'bone';
+    if(/[🦊🐺🦌🦦🦋]/u.test(value))return'buddy';
+    if(/[🍎🍑🍋🍓🍇🍊🫘🍉🫐]/u.test(value))return'fruit';
+    if(/[🍕🍜🍰🍪🍩🍔🧁🍦🍱]/u.test(value))return'food';
+    if(/[🌮]/u.test(value))return'taco';
+    if(/[🍉]/u.test(value))return'melon';
+    if(/[🍞]/u.test(value))return'bread';
+    if(/[🍣]/u.test(value))return'sushi';
+    if(/[🍬]/u.test(value))return'candy';
+    if(/[🎂]/u.test(value))return'cake';
+    if(/[🥚]/u.test(value))return'egg';
+    if(/[🥞]/u.test(value))return'pancake';
+    if(/[🫐]/u.test(value))return'berry';
+    if(/[👻]/u.test(value))return'ghost';
+    if(/[👀]/u.test(value))return'eye';
+    if(/[👑]/u.test(value))return'crown';
+    if(/[😎]/u.test(value))return'face';
+    if(/[🗿]/u.test(value))return'statue';
+    if(/[👤👥]/u.test(value))return'person';
+    if(/[💧🌊]/u.test(value))return'water';
+    if(/[🔐🔒]/u.test(value))return'lock';
+    if(/[🔊🔈🔇]/u.test(value))return'speaker';
+    if(/[🔁]/u.test(value))return'trade';
+    if(/[🗣️]/u.test(value))return'mic';
+    if(/[📈📊]/u.test(value))return'chart';
+    if(/[📋]/u.test(value))return'clipboard';
+    if(/[💬]/u.test(value))return'message';
+    if(/[💎🔷🔮]/u.test(value))return'gem';
+    if(/[🔥]/u.test(value))return'flame';
+    if(/[🔱]/u.test(value))return'trident';
+    if(/[🚀]/u.test(value))return'rocket';
+    if(/[➗➕➖✖️]/u.test(value))return'math';
+    return'buddy';
   }
   function makeIcon(value,className='svg-emoji'){return`<svg class="${className}" viewBox="0 0 64 64" aria-hidden="true"><g transform="translate(7 7) scale(.72)" fill="#a98ae9" stroke="#e8ddff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">${iconArt[iconKind(value)]}</g></svg>`;}
   function buddyDetails(name,glyph,colors){
